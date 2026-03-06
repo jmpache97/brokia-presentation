@@ -1,0 +1,1341 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BROKIA — Plataforma Operativa para Corredores de Seguros</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700&family=Space+Mono:wght@400;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0a0a0f;
+  --bg-subtle: #12121a;
+  --text: #e8e8ec;
+  --text-dim: #6b6b7b;
+  --accent: #00e5c8;
+  --accent-glow: rgba(0, 229, 200, 0.15);
+  --accent-dim: #007a6b;
+  --orange: #ff6b35;
+  --red: #ff4757;
+  --purple: #a855f7;
+  --yellow: #fbbf24;
+  --blue: #3b82f6;
+  --nav-w: 220px;
+  --slide-transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html, body {
+  height: 100%; width: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ─── SLIDE COUNTER ─── */
+.slide-counter {
+  position: fixed; top: 28px; right: 36px;
+  font-family: 'Space Mono', monospace;
+  font-size: 14px; color: var(--text-dim);
+  z-index: 100; letter-spacing: 1px;
+}
+
+/* ─── CHAPTER NAV ─── */
+.chapter-nav {
+  position: fixed; left: 0; top: 0; bottom: 0;
+  width: var(--nav-w);
+  background: var(--bg-subtle);
+  border-right: 1px solid rgba(255,255,255,0.04);
+  display: flex; flex-direction: column;
+  justify-content: center;
+  padding: 40px 0;
+  z-index: 100;
+}
+.chapter-nav .ch-item {
+  padding: 12px 24px 12px 28px;
+  font-size: 13px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  letter-spacing: 0.3px;
+  font-weight: 400;
+}
+.chapter-nav .ch-item::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: transparent;
+  transition: background 0.3s ease;
+  border-radius: 0 2px 2px 0;
+}
+.chapter-nav .ch-item:hover { color: var(--text); }
+.chapter-nav .ch-item.active {
+  color: var(--accent);
+  font-weight: 500;
+}
+.chapter-nav .ch-item.active::before {
+  background: var(--accent);
+}
+.chapter-nav .ch-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  margin-right: 8px;
+  opacity: 0.5;
+}
+.chapter-nav .ch-item.active .ch-num {
+  color: var(--accent);
+  opacity: 0.7;
+}
+
+/* ─── SLIDE AREA ─── */
+.slides-container {
+  position: fixed;
+  left: var(--nav-w); top: 0; right: 0; bottom: 0;
+  overflow: hidden;
+}
+.slide {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity var(--slide-transition), transform var(--slide-transition);
+  pointer-events: none;
+  padding: 60px 80px;
+}
+.slide.active {
+  opacity: 1; transform: translateY(0);
+  pointer-events: auto;
+}
+.slide-inner {
+  width: 100%; max-width: 900px;
+  text-align: center;
+}
+
+/* ─── TYPOGRAPHY ─── */
+.display-xl {
+  font-family: 'Instrument Serif', serif;
+  font-size: 72px; font-weight: 400;
+  line-height: 1.1; letter-spacing: -1px;
+}
+.display-lg {
+  font-family: 'Instrument Serif', serif;
+  font-size: 56px; font-weight: 400;
+  line-height: 1.15;
+}
+.display-md {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 36px; font-weight: 300;
+  line-height: 1.35;
+}
+.display-sm {
+  font-family: 'DM Sans', sans-serif;
+  font-size: 24px; font-weight: 300;
+  line-height: 1.5; color: var(--text-dim);
+}
+.mono {
+  font-family: 'Space Mono', monospace;
+}
+.accent { color: var(--accent); }
+.dim { color: var(--text-dim); }
+.bold { font-weight: 700; }
+.italic { font-style: italic; }
+
+/* ─── BIG NUMBER ─── */
+.big-num {
+  font-family: 'Space Mono', monospace;
+  font-size: 120px; font-weight: 700;
+  color: var(--accent);
+  line-height: 1;
+  text-shadow: 0 0 60px var(--accent-glow);
+}
+
+/* ─── FLOW DIAGRAM ─── */
+.flow-row {
+  display: flex; align-items: center; justify-content: center;
+  gap: 20px; flex-wrap: wrap;
+}
+.flow-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 24px 30px;
+  min-width: 140px;
+  transition: all 0.4s ease;
+}
+.flow-item.highlight {
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
+.flow-arrow {
+  font-size: 28px; color: var(--accent); font-weight: 300;
+  opacity: 0.6;
+}
+
+/* ─── TOOL BADGES ─── */
+.tools-grid {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 20px; max-width: 600px; margin: 0 auto;
+}
+.tool-badge {
+  display: flex; align-items: center; gap: 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 24px 28px;
+  font-size: 18px; font-weight: 400;
+}
+.tool-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+}
+
+/* ─── CONSEQUENCE BARS ─── */
+.consequence-list {
+  display: flex; flex-direction: column; gap: 16px;
+  max-width: 600px; margin: 0 auto;
+}
+.consequence-bar {
+  display: flex; align-items: center; gap: 16px;
+  padding: 18px 24px;
+  border-radius: 12px;
+  background: rgba(255, 71, 87, 0.06);
+  border-left: 3px solid var(--red);
+  font-size: 18px; font-weight: 400;
+  text-align: left;
+}
+.consequence-bar .c-icon {
+  font-size: 20px; opacity: 0.7;
+}
+
+/* ─── PIPELINE ─── */
+.pipeline {
+  display: flex; flex-direction: column; gap: 0;
+  max-width: 500px; margin: 0 auto;
+  position: relative;
+}
+.pipeline::before {
+  content: '';
+  position: absolute; left: 28px; top: 28px; bottom: 28px;
+  width: 2px; background: rgba(255,255,255,0.06);
+}
+.pipeline-step {
+  display: flex; align-items: center; gap: 20px;
+  padding: 16px 0;
+  position: relative;
+}
+.pipeline-dot {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; font-weight: 700;
+  flex-shrink: 0;
+  z-index: 1;
+  font-family: 'Space Mono', monospace;
+}
+.pipeline-label {
+  font-size: 18px; text-align: left;
+}
+.pipeline-tag {
+  font-size: 11px; font-family: 'Space Mono', monospace;
+  color: var(--text-dim); margin-top: 4px;
+  text-transform: uppercase; letter-spacing: 1px;
+}
+
+/* ─── HYBRID DIAL ─── */
+.hybrid-row {
+  display: flex; align-items: center; justify-content: center; gap: 48px;
+}
+.hybrid-box {
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column; gap: 6px;
+  font-size: 22px; font-weight: 500;
+}
+.hybrid-divider {
+  font-size: 36px; color: var(--accent); font-weight: 300;
+}
+.hybrid-label {
+  font-size: 13px; font-family: 'Space Mono', monospace;
+  color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+/* ─── CHAT EXAMPLE ─── */
+.chat-example {
+  max-width: 480px; margin: 0 auto;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.chat-scroll-area {
+  width: 100%;
+  max-width: 540px;
+  height: min(66vh, 620px);
+  margin: 0 auto;
+  padding: 8px 14px 16px;
+  overflow-y: auto;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.015);
+  scroll-behavior: smooth;
+}
+.chat-scroll-area::-webkit-scrollbar {
+  width: 8px;
+}
+.chat-scroll-area::-webkit-scrollbar-track {
+  background: rgba(255,255,255,0.03);
+}
+.chat-scroll-area::-webkit-scrollbar-thumb {
+  background: rgba(0,229,200,0.25);
+  border-radius: 6px;
+}
+.slide.chat-demo-slide .slide-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.chat-bubble {
+  padding: 16px 22px;
+  border-radius: 18px;
+  font-size: 17px; line-height: 1.4;
+  max-width: 85%;
+}
+.chat-bubble.user {
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.08);
+  align-self: flex-start;
+  border-bottom-left-radius: 4px;
+}
+.chat-bubble.system {
+  background: var(--accent-glow);
+  border: 1px solid rgba(0, 229, 200, 0.2);
+  align-self: flex-end;
+  border-bottom-right-radius: 4px;
+  color: var(--accent);
+}
+.chat-sender {
+  font-size: 11px; font-family: 'Space Mono', monospace;
+  text-transform: uppercase; letter-spacing: 1px;
+  margin-bottom: 4px; opacity: 0.5;
+}
+.chat-quote-card {
+  align-self: flex-end;
+  width: 100%;
+  max-width: 430px;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 14px;
+  overflow: hidden;
+}
+.chat-quote-header {
+  padding: 12px 14px;
+  background: rgba(0,229,200,0.08);
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: var(--accent);
+  font-size: 11px;
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.chat-quote-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.chat-quote-table th,
+.chat-quote-table td {
+  padding: 10px 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+}
+.chat-quote-table th {
+  color: var(--text-dim);
+  font-size: 11px;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-weight: 400;
+}
+.chat-quote-table td:last-child {
+  color: var(--accent);
+  font-weight: 600;
+}
+.chat-quote-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* ─── CRM MODULES ─── */
+.crm-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 16px; max-width: 650px; margin: 0 auto;
+}
+.crm-module {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 14px;
+  padding: 28px 20px;
+  text-align: center;
+}
+.crm-module .crm-icon {
+  font-size: 28px; margin-bottom: 10px;
+}
+.crm-module .crm-label {
+  font-size: 15px; font-weight: 400;
+}
+
+/* ─── CRM OPERATIVO MOCKUP ─── */
+.crm-oper-slide .slide-inner {
+  max-width: 980px;
+}
+.crm-op-shell {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 18px;
+  padding: 14px;
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.02) inset;
+}
+.crm-op-main {
+  display: grid;
+  grid-template-columns: 1.05fr 1.25fr 1.2fr;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.crm-op-panel {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 12px;
+  text-align: left;
+}
+.crm-op-panel-title {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+.crm-op-clients {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.crm-op-client {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(255,255,255,0.06);
+  background: rgba(255,255,255,0.02);
+  color: var(--text-dim);
+  font-size: 14px;
+}
+.crm-op-client.selected {
+  color: var(--accent);
+  border-color: rgba(0,229,200,0.35);
+  background: rgba(0,229,200,0.1);
+}
+.crm-op-kv {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 8px 14px;
+  font-size: 14px;
+}
+.crm-op-kv-label {
+  color: var(--text-dim);
+}
+.crm-op-kv-value {
+  color: var(--text);
+}
+.crm-op-kv-value.accent {
+  color: var(--accent);
+}
+.crm-op-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.08);
+  margin: 12px 0;
+}
+.crm-op-docs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.crm-op-doc-chip {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  border-radius: 7px;
+  border: 1px solid rgba(96,165,250,0.3);
+  background: rgba(96,165,250,0.1);
+  color: var(--blue);
+  padding: 6px 8px;
+}
+.crm-op-alert-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.crm-op-alert {
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 10px;
+  padding: 10px;
+  background: rgba(255,255,255,0.015);
+}
+.crm-op-alert-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.crm-op-alert-label {
+  font-size: 13px;
+}
+.crm-op-action-btn {
+  border: 1px solid rgba(255,255,255,0.12);
+  background: rgba(255,255,255,0.04);
+  color: var(--text);
+  border-radius: 8px;
+  padding: 6px 9px;
+  font-size: 11px;
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.3px;
+}
+.crm-op-action-btn.featured {
+  border-color: rgba(0,229,200,0.45);
+  background: rgba(0,229,200,0.14);
+  color: var(--accent);
+  box-shadow: 0 0 18px rgba(0,229,200,0.12);
+}
+.crm-op-pulse.revealed {
+  animation: crmOpPulse 1.8s ease-in-out infinite;
+}
+@keyframes crmOpPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0,229,200,0.18); }
+  50% { box-shadow: 0 0 0 7px rgba(0,229,200,0.02); }
+}
+.crm-op-bridge {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.crm-op-bridge-line {
+  height: 1px;
+  flex: 1;
+  background: linear-gradient(90deg, rgba(0,229,200,0), rgba(0,229,200,0.5), rgba(37,211,102,0.2));
+}
+.crm-op-bridge-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #25d366;
+}
+.crm-op-success {
+  margin-top: 10px;
+  border: 1px solid rgba(34,197,94,0.35);
+  background: rgba(34,197,94,0.12);
+  color: #4ade80;
+  border-radius: 8px;
+  padding: 7px 9px;
+  font-size: 11px;
+  font-family: 'Space Mono', monospace;
+  text-transform: uppercase;
+  letter-spacing: 0.7px;
+}
+.crm-op-automation {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.crm-op-auto-chip {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  border-radius: 999px;
+  border: 1px solid rgba(0,229,200,0.3);
+  background: rgba(0,229,200,0.08);
+  color: var(--accent);
+  padding: 7px 10px;
+}
+
+/* ─── IMPACT METRICS ─── */
+.impact-row {
+  display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
+}
+.impact-card {
+  text-align: center;
+  padding: 30px;
+}
+.impact-icon {
+  font-size: 40px; margin-bottom: 12px;
+}
+.impact-text {
+  font-size: 18px; font-weight: 400;
+}
+
+/* ─── VISION SPLIT ─── */
+.vision-split {
+  display: flex; align-items: stretch; gap: 2px;
+  max-width: 700px; margin: 0 auto;
+  border-radius: 18px; overflow: hidden;
+}
+.vision-half {
+  flex: 1; padding: 48px 36px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 12px;
+}
+.vision-half.left { background: rgba(255,255,255,0.03); }
+.vision-half.right { background: var(--accent-glow); }
+
+/* ─── PROGRESSIVE REVEAL ─── */
+.reveal-step {
+  opacity: 0; transform: translateY(12px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal-step.revealed {
+  opacity: 1; transform: translateY(0);
+}
+
+/* ─── SPEAKER NOTES (hidden) ─── */
+.speaker-notes { display: none !important; }
+
+/* ─── PROGRESS BAR ─── */
+.progress-bar {
+  position: fixed; bottom: 0; left: var(--nav-w); right: 0;
+  height: 3px; background: rgba(255,255,255,0.03);
+  z-index: 100;
+}
+.progress-fill {
+  height: 100%; background: var(--accent);
+  transition: width 0.4s ease;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ─── DECORATIVE NOISE ─── */
+.slides-container::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  background-size: 200px;
+  pointer-events: none; z-index: 0;
+  opacity: 0.5;
+}
+
+/* ─── SUBTLE GLOW ─── */
+.glow-orb {
+  position: absolute;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, var(--accent-glow), transparent 70%);
+  pointer-events: none;
+  opacity: 0.4;
+  filter: blur(60px);
+}
+
+/* ─── TITLE SLIDE SPECIFICS ─── */
+.title-logo {
+  font-family: 'Space Mono', monospace;
+  font-size: 16px; letter-spacing: 8px;
+  color: var(--accent);
+  text-transform: uppercase;
+  margin-bottom: 32px;
+}
+.title-sub {
+  font-size: 18px; color: var(--text-dim);
+  margin-top: 20px; font-style: italic;
+  font-family: 'Instrument Serif', serif;
+}
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 1100px) {
+  .chapter-nav { width: 180px; }
+  :root { --nav-w: 180px; }
+  .display-xl { font-size: 52px; }
+  .big-num { font-size: 80px; }
+}
+</style>
+</head>
+<body>
+
+<!-- CHAPTER NAV -->
+<nav class="chapter-nav" id="chapterNav">
+  <div class="ch-item active" data-chapter="contexto" onclick="goToSlide(0)">
+    <span class="ch-num">01</span>Contexto
+  </div>
+  <div class="ch-item" data-chapter="problema" onclick="goToSlide(2)">
+    <span class="ch-num">02</span>Problema
+  </div>
+  <div class="ch-item" data-chapter="operacion" onclick="goToSlide(4)">
+    <span class="ch-num">03</span>Operación actual
+  </div>
+  <div class="ch-item" data-chapter="insight" onclick="goToSlide(6)">
+    <span class="ch-num">04</span>Insight
+  </div>
+  <div class="ch-item" data-chapter="solucion" onclick="goToSlide(8)">
+    <span class="ch-num">05</span>Solución
+  </div>
+  <div class="ch-item" data-chapter="ejemplo" onclick="goToSlide(11)">
+    <span class="ch-num">06</span>Ejemplo
+  </div>
+  <div class="ch-item" data-chapter="impacto" onclick="goToSlide(13)">
+    <span class="ch-num">07</span>Impacto
+  </div>
+</nav>
+
+<!-- SLIDE COUNTER -->
+<div class="slide-counter" id="slideCounter">1/15</div>
+
+<!-- PROGRESS BAR -->
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- ═══════════════════ SLIDES ═══════════════════ -->
+<div class="slides-container">
+
+<!-- SLIDE 0 — TITLE -->
+<div class="slide active" data-chapter="contexto"
+  data-notes="Hoy queremos mostrar una idea simple pero poderosa. Cómo transformar la forma en que operan los corredores de seguros. La mayoría de las interacciones con clientes ocurren por WhatsApp, llamadas o mensajes informales. Sin embargo, detrás de esas conversaciones hay decisiones importantes: cotizaciones, emisiones, cambios de vehículo, renovaciones o siniestros. Nuestra propuesta es convertir esas conversaciones en procesos estructurados y gestionables.">
+  <div class="glow-orb" style="top:-100px;right:-100px;"></div>
+  <div class="slide-inner">
+    <div class="title-logo">BROKIA</div>
+    <div class="display-lg">Plataforma Operativa para<br><span class="accent">Corredores de Seguros</span></div>
+    <div class="title-sub">Estructurando decisiones desde conversaciones</div>
+  </div>
+</div>
+
+<!-- SLIDE 1 — CONTEXTO: JUAN MANUEL -->
+<div class="slide" data-chapter="contexto"
+  data-notes="Este proyecto surge a partir de un caso real. Juan Manuel es un corredor de seguros independiente que administra una cartera de más de 700 clientes. La mayoría de las interacciones con clientes se realizan por WhatsApp. Cuando un cliente necesita algo —cotizar un auto, cambiar un vehículo o consultar por un siniestro— simplemente envía un mensaje. Cada uno de esos mensajes inicia una serie de tareas operativas que Juan Manuel debe gestionar.">
+  <div class="slide-inner">
+    <div style="margin-bottom:40px;">
+      <span class="mono dim" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;">Operación real</span>
+    </div>
+    <div class="display-lg" style="margin-bottom:16px;">Juan Manuel</div>
+    <div class="display-sm" style="margin-bottom:48px;">Corredor independiente</div>
+    <div class="flow-row">
+      <div class="flow-item highlight">
+        <div class="big-num" style="font-size:64px;">+700</div>
+        <div class="mono dim" style="font-size:12px;margin-top:4px;">CLIENTES</div>
+      </div>
+      <div class="flow-item">
+        <div style="font-size:32px;margin-bottom:4px;">🚗</div>
+        <div class="mono dim" style="font-size:12px;">AUTOMOTORES</div>
+      </div>
+      <div class="flow-item">
+        <div style="font-size:32px;margin-bottom:4px;">💬</div>
+        <div class="mono dim" style="font-size:12px;">WHATSAPP</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 2 — PROBLEMA: CORE TENSION -->
+<div class="slide" data-chapter="problema"
+  data-notes="El principal problema es que el sistema operativo del negocio es la memoria del corredor. Las conversaciones ocurren en WhatsApp. Pero los procesos que esas conversaciones generan —cotizaciones, emisiones, seguimiento de siniestros— no están estructurados en ningún sistema. Eso obliga al corredor a recordar qué prometió, qué cotización envió o qué quedó pendiente. Esto genera dependencia de memoria, falta de trazabilidad y mucha carga operativa.">
+  <div class="slide-inner">
+    <div class="display-md" style="margin-bottom:12px;">
+      El trabajo ocurre en
+    </div>
+    <div class="display-xl accent" style="margin-bottom:40px;">conversaciones</div>
+    <div class="display-md" style="margin-bottom:12px;">
+      pero los procesos viven en
+    </div>
+    <div class="display-xl" style="color:var(--red);">la cabeza del corredor</div>
+  </div>
+</div>
+
+<!-- SLIDE 3 — PROBLEMA: VISUAL MEMORY -->
+<div class="slide" data-chapter="problema"
+  data-notes="Hay una brecha entre lo que se comunica y lo que se gestiona. El corredor recibe mensajes, toma decisiones mentales, y ejecuta acciones manualmente. Todo eso sin un sistema que lo respalde. La memoria humana se convierte en el sistema operativo del negocio.">
+  <div class="slide-inner">
+    <div style="display:flex;align-items:center;justify-content:center;gap:24px;">
+      <div style="width:200px;height:200px;border-radius:50%;border:2px solid rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
+        <div style="font-size:40px;">💬</div>
+        <div class="mono" style="font-size:13px;color:var(--text-dim);">CONVERSACIÓN</div>
+      </div>
+      <div style="font-size:36px;color:var(--red);">≠</div>
+      <div style="width:200px;height:200px;border-radius:50%;border:2px dashed rgba(255,71,87,0.3);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;">
+        <div style="font-size:40px;">🧠</div>
+        <div class="mono" style="font-size:13px;color:var(--text-dim);">PROCESO</div>
+      </div>
+    </div>
+    <div class="display-sm" style="margin-top:40px;">Sin sistema que conecte ambos mundos</div>
+  </div>
+</div>
+
+<!-- SLIDE 4 — OPERACIÓN ACTUAL -->
+<div class="slide" data-chapter="operacion"
+  data-notes="Hoy la operación típica combina varias herramientas desconectadas. El cliente escribe por WhatsApp. El corredor entra manualmente a los portales de cada aseguradora para cotizar. A veces registra información en Excel. Y muchas decisiones quedan simplemente en conversaciones. No existe un sistema que conecte la conversación con el proceso operativo.">
+  <div class="slide-inner">
+    <div class="mono dim" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;">Herramientas actuales</div>
+    <div class="tools-grid">
+      <div class="tool-badge">
+        <div class="tool-icon" style="background:rgba(37,211,102,0.12);color:#25d366;">💬</div>
+        WhatsApp
+      </div>
+      <div class="tool-badge">
+        <div class="tool-icon" style="background:rgba(59,130,246,0.12);color:var(--blue);">🌐</div>
+        Portales
+      </div>
+      <div class="tool-badge">
+        <div class="tool-icon" style="background:rgba(34,197,94,0.12);color:#22c55e;">📊</div>
+        Excel
+      </div>
+      <div class="tool-badge">
+        <div class="tool-icon" style="background:rgba(255,71,87,0.12);color:var(--red);">🧠</div>
+        Memoria
+      </div>
+    </div>
+    <div class="display-sm" style="margin-top:36px;">Sin conexión entre sí</div>
+  </div>
+</div>
+
+<!-- SLIDE 5 — CONSECUENCIAS -->
+<div class="slide" data-chapter="operacion"
+  data-notes="Esto genera varios problemas. Primero, mucho tiempo operativo dedicado a tareas repetitivas. Segundo, riesgo de errores o información incompleta. Tercero, dificultad para reconstruir qué se decidió con un cliente. Por ejemplo: qué cobertura eligió, qué deducible aceptó o qué condiciones se pactaron.">
+  <div class="slide-inner">
+    <div class="mono dim" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;">Consecuencias</div>
+    <div class="consequence-list">
+      <div class="consequence-bar reveal-step">
+        <span class="c-icon">⏱</span> Tiempo operativo alto
+      </div>
+      <div class="consequence-bar reveal-step">
+        <span class="c-icon">⚠️</span> Riesgo de errores
+      </div>
+      <div class="consequence-bar reveal-step">
+        <span class="c-icon">🔍</span> Falta de trazabilidad
+      </div>
+      <div class="consequence-bar reveal-step">
+        <span class="c-icon">🔀</span> Decisiones dispersas
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 6 — INSIGHT -->
+<div class="slide" data-chapter="insight"
+  data-notes="El insight clave del proyecto es que las conversaciones contienen decisiones. Cuando un cliente escribe 'quiero cotizar un auto', eso no es solo un mensaje. Es el inicio de un proceso. Si logramos identificar esas decisiones dentro de las conversaciones, podemos estructurarlas y activar procesos operativos automáticamente.">
+  <div class="slide-inner">
+    <div class="flow-row" style="gap:32px;">
+      <div class="reveal-step">
+        <div class="display-lg">Conversaciones</div>
+      </div>
+      <div class="flow-arrow reveal-step" style="font-size:36px;">→</div>
+      <div class="reveal-step">
+        <div class="display-lg accent">Decisiones</div>
+      </div>
+      <div class="flow-arrow reveal-step" style="font-size:36px;">→</div>
+      <div class="reveal-step">
+        <div class="display-lg">Procesos</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 7 — PIPELINE CONCEPTUAL -->
+<div class="slide" data-chapter="insight"
+  data-notes="Nuestra arquitectura conceptual funciona de esta manera. Primero se captura la conversación. Luego el sistema identifica una decisión. Esa decisión se registra como un objeto estructurado. Y finalmente se dispara la ejecución de un proceso operativo. Esto permite pasar de conversaciones informales a operaciones trazables.">
+  <div class="slide-inner">
+    <div class="mono dim" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:40px;">Arquitectura conceptual</div>
+    <div class="pipeline">
+      <div class="pipeline-step reveal-step">
+        <div class="pipeline-dot" style="background:rgba(255,255,255,0.06);border:2px solid rgba(255,255,255,0.15);">💬</div>
+        <div>
+          <div class="pipeline-label">Conversation</div>
+          <div class="pipeline-tag">Input / Message</div>
+        </div>
+      </div>
+      <div class="pipeline-step reveal-step">
+        <div class="pipeline-dot" style="background:rgba(168,85,247,0.12);border:2px solid rgba(168,85,247,0.3);">📦</div>
+        <div>
+          <div class="pipeline-label" style="color:var(--purple);">Decision Object</div>
+          <div class="pipeline-tag">Object / State Creation</div>
+        </div>
+      </div>
+      <div class="pipeline-step reveal-step">
+        <div class="pipeline-dot" style="background:rgba(251,191,36,0.12);border:2px solid rgba(251,191,36,0.3);">⚡</div>
+        <div>
+          <div class="pipeline-label" style="color:var(--yellow);">Decision Event</div>
+          <div class="pipeline-tag">Event</div>
+        </div>
+      </div>
+      <div class="pipeline-step reveal-step">
+        <div class="pipeline-dot" style="background:var(--accent-glow);border:2px solid rgba(0,229,200,0.3);">▶</div>
+        <div>
+          <div class="pipeline-label accent">Process Execution</div>
+          <div class="pipeline-tag">Process Execution</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 8 — SOLUCIÓN -->
+<div class="slide" data-chapter="solucion"
+  data-notes="La solución que proponemos es una plataforma de gestión operativa para corredores. Un CRM especializado en seguros. Ahí vive la operación del corredor: clientes, pólizas, documentos, renovaciones, pagos pendientes. Pero además agregamos un asistente conversacional conectado a WhatsApp. Este asistente ayuda a ejecutar procesos directamente desde las conversaciones. El objetivo es conectar el canal de comunicación con el sistema operativo del negocio.">
+  <div class="glow-orb" style="bottom:-150px;left:50%;transform:translateX(-50%);"></div>
+  <div class="slide-inner">
+    <div style="display:flex;align-items:center;justify-content:center;gap:24px;margin-bottom:16px;">
+      <div class="display-lg">CRM operativo</div>
+    </div>
+    <div class="accent" style="font-size:48px;margin:16px 0;">+</div>
+    <div class="display-lg accent">Asistente conversacional</div>
+    <div class="display-sm" style="margin-top:32px;">WhatsApp como interfaz — CRM como motor</div>
+  </div>
+</div>
+
+<!-- SLIDE 9 — CRM MODULES -->
+<div class="slide" data-chapter="solucion"
+  data-notes="El CRM funciona como el centro de control de la operación. El corredor puede ver su cartera de clientes. Acceder a documentos. Ver el estado de pólizas. Recibir alertas de vencimientos o cuotas impagas. Y ejecutar acciones directamente desde el sistema. Por ejemplo: si una póliza está por vencer, el corredor puede presionar un botón y enviar automáticamente un aviso al cliente por WhatsApp. O disparar procesos de renovación. Esto reduce muchísimo la carga operativa.">
+  <div class="slide-inner">
+    <div class="mono dim" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:36px;">CRM del Corredor</div>
+    <div class="crm-grid">
+      <div class="crm-module reveal-step">
+        <div class="crm-icon">👥</div>
+        <div class="crm-label">Clientes</div>
+      </div>
+      <div class="crm-module reveal-step">
+        <div class="crm-icon">📄</div>
+        <div class="crm-label">Pólizas</div>
+      </div>
+      <div class="crm-module reveal-step">
+        <div class="crm-icon">📁</div>
+        <div class="crm-label">Documentos</div>
+      </div>
+      <div class="crm-module reveal-step">
+        <div class="crm-icon">🔔</div>
+        <div class="crm-label">Alertas</div>
+      </div>
+      <div class="crm-module reveal-step" style="grid-column:span 2;">
+        <div class="crm-icon">⚡</div>
+        <div class="crm-label">Acciones automáticas</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 10 — INTERACCIÓN HÍBRIDA -->
+<div class="slide" data-chapter="solucion"
+  data-notes="Una característica clave del sistema es que el corredor siempre mantiene el control. El sistema permite distintos modos de interacción. Modo manual, donde el corredor responde directamente. Modo asistido, donde el sistema sugiere información o preguntas. Y modo delegado, donde la IA puede avanzar parte de la conversación para recopilar datos. El corredor puede intervenir en cualquier momento.">
+  <div class="slide-inner">
+    <div class="mono dim" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:40px;">Control compartido</div>
+    <div class="hybrid-row">
+      <div>
+        <div class="hybrid-box" style="background:rgba(255,255,255,0.04);border:2px solid rgba(255,255,255,0.1);">
+          <span style="font-size:36px;">👤</span>
+          <span style="font-size:18px;">Humano</span>
+        </div>
+      </div>
+      <div class="hybrid-divider">↔</div>
+      <div>
+        <div class="hybrid-box" style="background:var(--accent-glow);border:2px solid rgba(0,229,200,0.25);">
+          <span style="font-size:36px;">🤖</span>
+          <span class="accent" style="font-size:18px;">IA</span>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:center;gap:32px;margin-top:40px;">
+      <div class="reveal-step" style="text-align:center;">
+        <div class="mono" style="font-size:12px;color:var(--text-dim);letter-spacing:1px;">MANUAL</div>
+      </div>
+      <div class="reveal-step" style="text-align:center;">
+        <div class="mono" style="font-size:12px;color:var(--yellow);letter-spacing:1px;">ASISTIDO</div>
+      </div>
+      <div class="reveal-step" style="text-align:center;">
+        <div class="mono" style="font-size:12px;color:var(--accent);letter-spacing:1px;">DELEGADO</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11 — EJEMPLO CHAT -->
+<div class="slide chat-demo-slide" data-chapter="ejemplo"
+  data-notes="Comenzamos en WhatsApp con un cliente que dice ‘Quiero cotizar un Gol’. El sistema detecta la intención, estructura un flow guiado para pedir modelo, cobertura y zona, y cuando recibe los datos ejecuta una cotización. Luego recomienda HDI como mejor opción, confirma la decisión con el cliente, notifica al corredor y, con su OK, emite el seguro.">
+  <div class="slide-inner">
+    <div class="mono dim" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:32px;">Ejemplo en vivo</div>
+    <div class="chat-scroll-area">
+    <div class="chat-example">
+      <div class="chat-bubble user reveal-step">
+        <div class="chat-sender">Cliente</div>
+        "Quiero cotizar un Gol"
+      </div>
+      <div class="chat-bubble system reveal-step">
+        <div class="chat-sender">Sistema</div>
+        Proceso de cotización detectado
+      </div>
+      <div style="display:flex;justify-content:center;margin:8px 0;" class="reveal-step">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+          <span class="mono" style="font-size:11px;background:rgba(168,85,247,0.12);color:var(--purple);padding:6px 12px;border-radius:6px;">📦 Decision Object</span>
+          <span class="mono" style="font-size:11px;background:rgba(251,191,36,0.12);color:var(--yellow);padding:6px 12px;border-radius:6px;">⚡ Event</span>
+          <span class="mono" style="font-size:11px;background:var(--accent-glow);color:var(--accent);padding:6px 12px;border-radius:6px;">▶ Cotización</span>
+        </div>
+      </div>
+      <div class="chat-bubble system reveal-step">
+        <div class="chat-sender">Asistente</div>
+        ¿Cual es el modelo y año del vehículo?<br>¿Qué cobertura te interesa?<br>¿Cuál es tu zona de circulación?
+      </div>
+      <div class="chat-bubble user reveal-step">
+        <div class="chat-sender">Cliente</div>
+        "Volkswagen Gol 1.6 Highline 2020, cobertura completa, zona de circulación 1"
+      </div>
+      <div class="chat-bubble system reveal-step">
+        <div class="chat-sender">Sistema</div>
+        Datos completos detectados. Ejecutando cotización comparativa.
+      </div>
+      <div class="chat-quote-card reveal-step">
+        <div class="chat-quote-header">Resultado de cotización</div>
+        <table class="chat-quote-table">
+          <thead>
+            <tr>
+              <th>Aseguradora</th>
+              <th>Plan</th>
+              <th>Precio mensual</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Sancor Seguros</td>
+              <td>Cobertura Completa</td>
+              <td>$ 64.800</td>
+            </tr>
+            <tr>
+              <td>HDI</td>
+              <td>Cobertura Completa</td>
+              <td>$ 58.300</td>
+            </tr>
+            <tr>
+              <td>BSE</td>
+              <td>Cobertura Completa</td>
+              <td>$ 61.200</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="chat-bubble system reveal-step">
+        <div class="chat-sender">Sistema</div>
+        Dado los precios obtenidos y tu vehículo, lo ideal sería ir con HDI. ¿Te parece bien?
+      </div>
+      <div class="chat-bubble user reveal-step">
+        <div class="chat-sender">Cliente</div>
+        "Sí, me parece bien. Avancemos con HDI."
+      </div>
+      <div class="chat-bubble system reveal-step">
+        <div class="chat-sender">Sistema</div>
+        Decisión detectada: avanzar con HDI. Notificando al corredor para validación final.
+      </div>
+      <div style="display:flex;justify-content:center;margin:8px 0;" class="reveal-step">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center;">
+          <span class="mono" style="font-size:11px;background:rgba(168,85,247,0.12);color:var(--purple);padding:6px 12px;border-radius:6px;">📦 Decision Object actualizado</span>
+          <span class="mono" style="font-size:11px;background:rgba(251,191,36,0.12);color:var(--yellow);padding:6px 12px;border-radius:6px;">🔔 Event: opción elegida</span>
+          <span class="mono" style="font-size:11px;background:rgba(96,165,250,0.12);color:var(--blue);padding:6px 12px;border-radius:6px;">👤 Aviso al corredor</span>
+        </div>
+      </div>
+      <div class="chat-bubble user reveal-step">
+        <div class="chat-sender">Corredor</div>
+        "OK, emitir con HDI."
+      </div>
+      <div class="chat-bubble system reveal-step">
+        <div class="chat-sender">Sistema</div>
+        Aprobación del corredor recibida. Seguro emitido con HDI ✅
+      </div>
+    </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 12 — CRM OPERATIVO -->
+<div class="slide crm-oper-slide" data-chapter="ejemplo"
+  data-notes="Brokia no es solo un motor conversacional por WhatsApp. También es el CRM operativo donde vive la cartera del corredor. Desde aca puede ver clientes, polizas y documentos en un mismo lugar, recibir alertas operativas y ejecutar acciones concretas. Esas acciones no se limitan a WhatsApp: puede cotizar, enviar email, crear ticket en Jira o disparar procesos internos segun el caso. Esto transforma a Brokia en una plataforma operativa completa, con automatizaciones multicanal y de backoffice.">
+  <div class="slide-inner">
+    <div class="mono dim" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;">Centro de control de la operación</div>
+    <div class="display-md" style="margin-bottom:24px;">CRM Operativo del Corredor</div>
+
+    <div class="crm-op-shell reveal-step">
+      <div class="crm-op-main">
+        <div class="crm-op-panel reveal-step">
+          <div class="crm-op-panel-title">Clientes</div>
+          <div class="crm-op-clients">
+            <div class="crm-op-client selected">Carlos Pereira</div>
+            <div class="crm-op-client">Ana Rodriguez</div>
+            <div class="crm-op-client">Luis Gomez</div>
+            <div class="crm-op-client">Maria Silva</div>
+          </div>
+        </div>
+
+        <div class="crm-op-panel reveal-step">
+          <div class="crm-op-panel-title">Ficha de cliente</div>
+          <div class="crm-op-kv">
+            <div class="crm-op-kv-label">Cliente</div><div class="crm-op-kv-value">Carlos Pereira</div>
+            <div class="crm-op-kv-label">Vehiculo</div><div class="crm-op-kv-value">Gol 2021</div>
+            <div class="crm-op-kv-label">Aseguradora</div><div class="crm-op-kv-value">Sura</div>
+            <div class="crm-op-kv-label">Estado</div><div class="crm-op-kv-value accent">Activa</div>
+            <div class="crm-op-kv-label">Prox. vencimiento</div><div class="crm-op-kv-value">15 julio</div>
+          </div>
+          <div class="crm-op-divider"></div>
+          <div class="crm-op-panel-title" style="margin-bottom:8px;">Documentos</div>
+          <div class="crm-op-docs">
+            <div class="crm-op-doc-chip">Poliza PDF</div>
+            <div class="crm-op-doc-chip">Recibo de pago</div>
+          </div>
+        </div>
+
+        <div class="crm-op-panel reveal-step">
+          <div class="crm-op-panel-title">Alertas operativas</div>
+          <div class="crm-op-alert-list">
+            <div class="crm-op-alert">
+              <div class="crm-op-alert-row">
+                <div class="crm-op-alert-label">Vencimiento de poliza proximo</div>
+                <button class="crm-op-action-btn">Iniciar renovacion</button>
+              </div>
+            </div>
+            <div class="crm-op-alert">
+              <div class="crm-op-alert-row">
+                <div class="crm-op-alert-label">Cuota impaga</div>
+                <button class="crm-op-action-btn">Enviar recordatorio</button>
+              </div>
+            </div>
+            <div class="crm-op-alert">
+              <div class="crm-op-alert-row">
+                <div class="crm-op-alert-label">Renovacion pendiente</div>
+                <button class="crm-op-action-btn">Crear ticket Jira</button>
+              </div>
+            </div>
+          </div>
+          <div class="crm-op-bridge">
+            <div class="crm-op-bridge-line"></div>
+            <div class="crm-op-bridge-label">Canales y sistemas</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="crm-op-main" style="grid-template-columns: 1fr 1fr; margin-bottom: 0;">
+        <div class="crm-op-panel reveal-step">
+          <div class="crm-op-panel-title">Accion rapida destacada</div>
+          <button class="crm-op-action-btn featured crm-op-pulse reveal-step">Disparar operacion</button>
+        </div>
+        <div class="crm-op-panel reveal-step">
+          <div class="crm-op-panel-title">Automatizaciones</div>
+          <div class="crm-op-automation">
+            <div class="crm-op-auto-chip">Aviso automatico vencimientos</div>
+            <div class="crm-op-auto-chip">Aviso cuotas impagas</div>
+            <div class="crm-op-auto-chip">Recordatorio renovacion</div>
+          </div>
+          <div class="crm-op-success reveal-step">Mensaje enviado - Proceso disparado</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 13 — IMPACTO -->
+<div class="slide" data-chapter="impacto"
+  data-notes="El objetivo final es profesionalizar la operación del corredor. Reducir la carga operativa. Estructurar decisiones. Y generar trazabilidad sobre las condiciones pactadas con los clientes. En lugar de depender de la memoria del corredor, el sistema organiza la operación.">
+  <div class="slide-inner">
+    <div class="mono dim" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:40px;">Impacto</div>
+    <div class="impact-row">
+      <div class="impact-card reveal-step">
+        <div class="impact-icon" style="color:var(--accent);">⚡</div>
+        <div class="impact-text">Menos<br><span class="bold accent">fricción</span></div>
+      </div>
+      <div class="impact-card reveal-step">
+        <div class="impact-icon" style="color:var(--blue);">🔍</div>
+        <div class="impact-text">Más<br><span class="bold" style="color:var(--blue);">trazabilidad</span></div>
+      </div>
+      <div class="impact-card reveal-step">
+        <div class="impact-icon" style="color:var(--yellow);">🚀</div>
+        <div class="impact-text">Menos<br><span class="bold" style="color:var(--yellow);">carga operativa</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 14 — VISIÓN -->
+<div class="slide" data-chapter="impacto"
+  data-notes="La visión del proyecto es simple. Las conversaciones seguirán siendo la forma natural en que los clientes interactúan. Pero detrás de esas conversaciones habrá un sistema operativo que estructura decisiones y ejecuta procesos. WhatsApp se convierte en la interfaz. El CRM se convierte en el sistema operativo del negocio.">
+  <div class="glow-orb" style="top:50%;left:50%;transform:translate(-50%,-50%);"></div>
+  <div class="slide-inner">
+    <div class="vision-split">
+      <div class="vision-half left">
+        <div style="font-size:36px;">💬</div>
+        <div class="display-md">Conversaciones</div>
+        <div class="mono dim" style="font-size:12px;letter-spacing:1px;">COMO INTERFAZ</div>
+      </div>
+      <div class="vision-half right">
+        <div style="font-size:36px;">⚙️</div>
+        <div class="display-md accent">Operación</div>
+        <div class="mono" style="font-size:12px;letter-spacing:1px;color:var(--accent-dim);">EN UN SISTEMA</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- /slides-container -->
+
+<script>
+// ─── CORE STATE ───
+let current = 0;
+const slides = document.querySelectorAll('.slide');
+const total = slides.length;
+const counter = document.getElementById('slideCounter');
+const progressFill = document.getElementById('progressFill');
+const chapterItems = document.querySelectorAll('.ch-item');
+let presenterWin = null;
+
+// ─── CHAPTER MAP ───
+const chapterMap = {
+  contexto: [0, 1],
+  problema: [2, 3],
+  operacion: [4, 5],
+  insight: [6, 7],
+  solucion: [8, 9, 10],
+  ejemplo: [11, 12],
+  impacto: [13, 14]
+};
+
+// ─── NAVIGATION ───
+function goToSlide(n) {
+  if (n < 0 || n >= total) return;
+  slides[current].classList.remove('active');
+  current = n;
+  slides[current].classList.add('active');
+  updateUI();
+  triggerReveals();
+  syncPresenter();
+}
+
+function next() { goToSlide(current + 1); }
+function prev() { goToSlide(current - 1); }
+
+function updateUI() {
+  counter.textContent = `${current + 1}/${total}`;
+  progressFill.style.width = `${((current + 1) / total) * 100}%`;
+
+  const activeChapter = slides[current].dataset.chapter;
+  chapterItems.forEach(c => {
+    c.classList.toggle('active', c.dataset.chapter === activeChapter);
+  });
+}
+
+// ─── PROGRESSIVE REVEAL ───
+function triggerReveals() {
+  const activeSlide = slides[current];
+  const steps = activeSlide.querySelectorAll('.reveal-step');
+  const chatScrollArea = activeSlide.querySelector('.chat-scroll-area');
+
+  if (chatScrollArea) {
+    chatScrollArea.scrollTop = 0;
+  }
+
+  steps.forEach((s, i) => {
+    s.classList.remove('revealed');
+    setTimeout(() => {
+      s.classList.add('revealed');
+      const parentScroll = s.closest('.chat-scroll-area');
+      if (parentScroll) {
+        const parentRect = parentScroll.getBoundingClientRect();
+        const stepRect = s.getBoundingClientRect();
+        const bottomPadding = 20;
+        const overflowBottom = stepRect.bottom - (parentRect.bottom - bottomPadding);
+
+        // Scroll only when the new revealed item overflows the visible bottom.
+        if (overflowBottom > 0) {
+          parentScroll.scrollBy({ top: overflowBottom, behavior: 'smooth' });
+        }
+      }
+    }, 200 + i * 250);
+  });
+}
+
+// ─── KEYBOARD ───
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); prev(); }
+  if (e.key === 'p' || e.key === 'P') openPresenter();
+  if (e.key === 'f' || e.key === 'F') toggleFullscreen();
+});
+
+// ─── FULLSCREEN ───
+function toggleFullscreen() {
+  if (!document.fullscreenElement) {
+    document.documentElement.requestFullscreen();
+  } else {
+    document.exitFullscreen();
+  }
+}
+
+// ─── PRESENTER MODE ───
+function openPresenter() {
+  if (presenterWin && !presenterWin.closed) { presenterWin.focus(); return; }
+  presenterWin = window.open('', 'PresenterView', 'width=900,height=650');
+  const doc = presenterWin.document;
+  doc.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Presenter View</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:#111;color:#e0e0e0;font-family:'DM Sans',system-ui,sans-serif;overflow:hidden;height:100vh;display:flex;flex-direction:column;}
+.top{display:flex;flex:1;min-height:0;}
+.current-preview,.next-preview{flex:1;border:1px solid #222;margin:8px;border-radius:8px;overflow:hidden;display:flex;align-items:center;justify-content:center;background:#0a0a0f;position:relative;}
+.preview-label{position:absolute;top:8px;left:12px;font-size:11px;color:#555;text-transform:uppercase;letter-spacing:1px;}
+.preview-content{font-size:12px;padding:16px;text-align:center;color:#ccc;max-height:100%;overflow:auto;}
+.notes-panel{height:40%;border-top:1px solid #222;padding:20px 24px;overflow-y:auto;transition:height .3s ease;}
+.notes-panel.hidden{height:0;padding:0;overflow:hidden;}
+.notes-text{font-size:18px;line-height:1.7;color:#ddd;}
+.status{display:flex;justify-content:space-between;padding:8px 16px;background:#0a0a0a;font-size:13px;color:#555;border-top:1px solid #1a1a1a;}
+.status .slide-num{color:#00e5c8;font-weight:700;}
+.nav-btn{background:#222;border:none;color:#aaa;padding:6px 14px;border-radius:4px;cursor:pointer;font-size:13px;}
+.nav-btn:hover{background:#333;color:#fff;}
+</style></head><body>
+<div class="top">
+  <div class="current-preview"><div class="preview-label">Actual</div><div class="preview-content" id="pCurrent"></div></div>
+  <div class="next-preview"><div class="preview-label">Siguiente</div><div class="preview-content" id="pNext"></div></div>
+</div>
+<div class="notes-panel" id="notesPanel"><div class="notes-text" id="pNotes"></div></div>
+<div class="status">
+  <div><span class="slide-num" id="pCounter"></span></div>
+  <div style="display:flex;gap:8px;align-items:center;">
+    <button class="nav-btn" onclick="window.opener.prev()">← Prev</button>
+    <button class="nav-btn" onclick="window.opener.next()">Next →</button>
+    <span style="margin-left:8px;font-size:11px;color:#444;">N = notas · ← → = navegar</span>
+  </div>
+</div>
+</body></html>`);
+  doc.close();
+
+  presenterWin.addEventListener('keydown', e => {
+    if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+    if (e.key === 'n' || e.key === 'N') {
+      presenterWin.document.getElementById('notesPanel').classList.toggle('hidden');
+    }
+  });
+
+  setTimeout(syncPresenter, 100);
+}
+
+function syncPresenter() {
+  if (!presenterWin || presenterWin.closed) return;
+  const doc = presenterWin.document;
+  const pCurrent = doc.getElementById('pCurrent');
+  const pNext = doc.getElementById('pNext');
+  const pNotes = doc.getElementById('pNotes');
+  const pCounter = doc.getElementById('pCounter');
+
+  if (pCurrent) pCurrent.innerHTML = slides[current].querySelector('.slide-inner')?.innerHTML || '';
+  if (pNext && current + 1 < total) pNext.innerHTML = slides[current + 1].querySelector('.slide-inner')?.innerHTML || '';
+  else if (pNext) pNext.innerHTML = '<span style="color:#555;">Fin</span>';
+  if (pNotes) pNotes.textContent = slides[current].dataset.notes || '';
+  if (pCounter) pCounter.textContent = `${current + 1} / ${total}`;
+}
+
+// ─── INIT ───
+updateUI();
+triggerReveals();
+</script>
+</body>
+</html>
