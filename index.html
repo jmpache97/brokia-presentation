@@ -571,6 +571,118 @@ html, body {
   padding: 7px 10px;
 }
 
+/* ─── PROFESSIONAL OUTPUTS ─── */
+.prof-comm-slide .slide-inner {
+  max-width: 980px;
+}
+.deliverables-gallery {
+  margin-top: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.deliverable-card {
+  background: rgba(255,255,255,0.025);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 14px;
+  padding: 12px;
+  text-align: left;
+  min-height: 172px;
+}
+.deliverable-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.deliverable-brand {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.deliverable-logo {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: rgba(0,229,200,0.2);
+  border: 1px solid rgba(0,229,200,0.5);
+  box-shadow: 0 0 12px rgba(0,229,200,0.15);
+}
+.deliverable-brand-name {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+}
+.deliverable-type {
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid rgba(0,229,200,0.35);
+  background: rgba(0,229,200,0.1);
+  border-radius: 999px;
+  padding: 4px 8px;
+}
+.deliverable-title {
+  font-size: 18px;
+  margin-bottom: 8px;
+}
+.deliverable-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.deliverable-line {
+  height: 8px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.08);
+}
+.deliverable-line.short {
+  width: 54%;
+}
+.deliverable-line.mid {
+  width: 72%;
+}
+.deliverable-line.accent {
+  background: rgba(0,229,200,0.25);
+  width: 66%;
+}
+.deliverable-channel {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 8px;
+  font-family: 'Space Mono', monospace;
+  font-size: 10px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.deliverable-wa-icon {
+  width: 14px;
+  height: 14px;
+  object-fit: contain;
+}
+.deliverables-footer {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+}
+.deliverables-badge {
+  font-family: 'Space Mono', monospace;
+  font-size: 11px;
+  letter-spacing: 0.9px;
+  text-transform: uppercase;
+  color: #4ade80;
+  border: 1px solid rgba(74,222,128,0.35);
+  background: rgba(74,222,128,0.12);
+  border-radius: 999px;
+  padding: 8px 12px;
+}
+
 /* ─── IMPACT METRICS ─── */
 .impact-row {
   display: flex; justify-content: center; gap: 40px; flex-wrap: wrap;
@@ -688,16 +800,16 @@ html, body {
   <div class="ch-item" data-chapter="solucion" onclick="goToSlide(8)">
     <span class="ch-num">05</span>Solución
   </div>
-  <div class="ch-item" data-chapter="ejemplo" onclick="goToSlide(11)">
+  <div class="ch-item" data-chapter="ejemplo" onclick="goToSlide(12)">
     <span class="ch-num">06</span>Ejemplo
   </div>
-  <div class="ch-item" data-chapter="impacto" onclick="goToSlide(13)">
+  <div class="ch-item" data-chapter="impacto" onclick="goToSlide(14)">
     <span class="ch-num">07</span>Impacto
   </div>
 </nav>
 
 <!-- SLIDE COUNTER -->
-<div class="slide-counter" id="slideCounter">1/15</div>
+<div class="slide-counter" id="slideCounter">1/16</div>
 
 <!-- PROGRESS BAR -->
 <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
@@ -895,7 +1007,7 @@ html, body {
     </div>
     <div class="accent" style="font-size:48px;margin:16px 0;">+</div>
     <div class="display-lg accent">Asistente conversacional</div>
-    <div class="display-sm" style="margin-top:32px;">WhatsApp como interfaz — CRM como motor</div>
+    <div class="display-sm" style="margin-top:32px;">WhatsApp como interfaz — CRM como motor — entregables profesionales</div>
   </div>
 </div>
 
@@ -929,7 +1041,93 @@ html, body {
   </div>
 </div>
 
-<!-- SLIDE 10 — INTERACCIÓN HÍBRIDA -->
+<!-- SLIDE 10 — COMUNICACIÓN PROFESIONAL AUTOMATIZADA -->
+<div class="slide prof-comm-slide" data-chapter="solucion"
+  data-notes="Ademas de ordenar la operacion y automatizar procesos, Brokia tambien ayuda a profesionalizar la forma en que el corredor se presenta frente al cliente. Muchos corredores hoy envian cotizaciones, comparativos o avisos de forma improvisada, por WhatsApp o mail, sin consistencia visual ni documental. Brokia puede transformar automaticamente la informacion operativa en entregables profesionales: PDFs, emails, resumenes de cobertura o avisos listos para enviar. Esto reduce tiempo manual, mejora la claridad para el cliente, mantiene una identidad visual consistente del corredor y eleva la percepcion profesional del servicio.">
+  <div class="slide-inner">
+    <div class="mono dim reveal-step" style="font-size:13px;letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;">La operación también se ve mejor</div>
+    <div class="display-md reveal-step" style="margin-bottom:22px;">Comunicación profesional automatizada</div>
+
+    <div class="deliverables-gallery">
+      <div class="deliverable-card reveal-step">
+        <div class="deliverable-head">
+          <div class="deliverable-brand">
+            <div class="deliverable-logo"></div>
+            <div class="deliverable-brand-name">Corredor Brand</div>
+          </div>
+          <div class="deliverable-type">Cotizacion PDF</div>
+        </div>
+        <div class="deliverable-title">Comparativo listo para enviar</div>
+        <div class="deliverable-lines">
+          <div class="deliverable-line accent"></div>
+          <div class="deliverable-line"></div>
+          <div class="deliverable-line mid"></div>
+          <div class="deliverable-line short"></div>
+        </div>
+      </div>
+
+      <div class="deliverable-card reveal-step">
+        <div class="deliverable-head">
+          <div class="deliverable-brand">
+            <div class="deliverable-logo"></div>
+            <div class="deliverable-brand-name">Corredor Brand</div>
+          </div>
+          <div class="deliverable-type">Email de renovacion</div>
+        </div>
+        <div class="deliverable-title">Formato limpio y consistente</div>
+        <div class="deliverable-lines">
+          <div class="deliverable-line"></div>
+          <div class="deliverable-line accent"></div>
+          <div class="deliverable-line"></div>
+          <div class="deliverable-line short"></div>
+        </div>
+      </div>
+
+      <div class="deliverable-card reveal-step">
+        <div class="deliverable-head">
+          <div class="deliverable-brand">
+            <div class="deliverable-logo"></div>
+            <div class="deliverable-brand-name">Corredor Brand</div>
+          </div>
+          <div class="deliverable-type">Aviso de vencimiento</div>
+        </div>
+        <div class="deliverable-title">Mensaje formal y estructurado</div>
+        <div class="deliverable-lines">
+          <div class="deliverable-line accent"></div>
+          <div class="deliverable-line mid"></div>
+          <div class="deliverable-line short"></div>
+        </div>
+        <div class="deliverable-channel">
+          <img src="./WhatsApp_icon.png" alt="WhatsApp" class="deliverable-wa-icon">
+          <span>WhatsApp</span>
+        </div>
+      </div>
+
+      <div class="deliverable-card reveal-step">
+        <div class="deliverable-head">
+          <div class="deliverable-brand">
+            <div class="deliverable-logo"></div>
+            <div class="deliverable-brand-name">Corredor Brand</div>
+          </div>
+          <div class="deliverable-type">Resumen de cobertura</div>
+        </div>
+        <div class="deliverable-title">Documentacion clara y uniforme</div>
+        <div class="deliverable-lines">
+          <div class="deliverable-line"></div>
+          <div class="deliverable-line"></div>
+          <div class="deliverable-line accent"></div>
+          <div class="deliverable-line short"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="deliverables-footer reveal-step">
+      <div class="deliverables-badge">Generado automaticamente - Listo para enviar</div>
+    </div>
+  </div>
+</div>
+
+<!-- SLIDE 11 — INTERACCIÓN HÍBRIDA -->
 <div class="slide" data-chapter="solucion"
   data-notes="Una característica clave del sistema es que el corredor siempre mantiene el control. El sistema permite distintos modos de interacción. Modo manual, donde el corredor responde directamente. Modo asistido, donde el sistema sugiere información o preguntas. Y modo delegado, donde la IA puede avanzar parte de la conversación para recopilar datos. El corredor puede intervenir en cualquier momento.">
   <div class="slide-inner">
@@ -963,7 +1161,7 @@ html, body {
   </div>
 </div>
 
-<!-- SLIDE 11 — EJEMPLO CHAT -->
+<!-- SLIDE 12 — EJEMPLO CHAT -->
 <div class="slide chat-demo-slide" data-chapter="ejemplo"
   data-notes="Comenzamos en WhatsApp con un cliente que dice ‘Quiero cotizar un Gol’. El sistema detecta la intención, estructura un flow guiado para pedir modelo, cobertura y zona, y cuando recibe los datos ejecuta una cotización. Luego recomienda HDI como mejor opción, confirma la decisión con el cliente, notifica al corredor y, con su OK, emite el seguro.">
   <div class="slide-inner">
@@ -1058,7 +1256,7 @@ html, body {
   </div>
 </div>
 
-<!-- SLIDE 12 — CRM OPERATIVO -->
+<!-- SLIDE 13 — CRM OPERATIVO -->
 <div class="slide crm-oper-slide" data-chapter="ejemplo"
   data-notes="Brokia no es solo un motor conversacional por WhatsApp. También es el CRM operativo donde vive la cartera del corredor. Desde aca puede ver clientes, polizas y documentos en un mismo lugar, recibir alertas operativas y ejecutar acciones concretas. Esas acciones no se limitan a WhatsApp: puede cotizar, enviar email, crear ticket en Jira o disparar procesos internos segun el caso. Esto transforma a Brokia en una plataforma operativa completa, con automatizaciones multicanal y de backoffice.">
   <div class="slide-inner">
@@ -1142,7 +1340,7 @@ html, body {
   </div>
 </div>
 
-<!-- SLIDE 13 — IMPACTO -->
+<!-- SLIDE 14 — IMPACTO -->
 <div class="slide" data-chapter="impacto"
   data-notes="El objetivo final es profesionalizar la operación del corredor. Reducir la carga operativa. Estructurar decisiones. Y generar trazabilidad sobre las condiciones pactadas con los clientes. En lugar de depender de la memoria del corredor, el sistema organiza la operación.">
   <div class="slide-inner">
@@ -1164,7 +1362,7 @@ html, body {
   </div>
 </div>
 
-<!-- SLIDE 14 — VISIÓN -->
+<!-- SLIDE 15 — VISIÓN -->
 <div class="slide" data-chapter="impacto"
   data-notes="La visión del proyecto es simple. Las conversaciones seguirán siendo la forma natural en que los clientes interactúan. Pero detrás de esas conversaciones habrá un sistema operativo que estructura decisiones y ejecuta procesos. WhatsApp se convierte en la interfaz. El CRM se convierte en el sistema operativo del negocio.">
   <div class="glow-orb" style="top:50%;left:50%;transform:translate(-50%,-50%);"></div>
@@ -1202,9 +1400,9 @@ const chapterMap = {
   problema: [2, 3],
   operacion: [4, 5],
   insight: [6, 7],
-  solucion: [8, 9, 10],
-  ejemplo: [11, 12],
-  impacto: [13, 14]
+  solucion: [8, 9, 10, 11],
+  ejemplo: [12, 13],
+  impacto: [14, 15]
 };
 
 // ─── NAVIGATION ───
